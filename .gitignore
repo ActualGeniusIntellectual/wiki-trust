@@ -4,3 +4,5 @@ target
 *.data
 *.csv
 *.lock
+.env
+.store.json
