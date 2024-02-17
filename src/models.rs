@@ -2,13 +2,13 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub struct Revision {
-    pub id: u64,
-    pub timestamp: String,
-    pub minor: bool,
-    pub size: u32,
-    pub comment: String,
-    pub user: User,
-    pub delta: i32,
+    pub id: Option<u64>,
+    pub timestamp: Option<String>,
+    pub minor: Option<bool>,
+    pub size: Option<u32>,
+    pub comment: Option<String>,
+    pub user: Option<User>,
+    pub delta: Option<i32>,
 }
 
 // Struct for the response from the API
@@ -23,6 +23,6 @@ pub struct RevisionResponse {
 // Struct for the user
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub struct User {
-    pub id: u64,
-    pub name: String,
+    pub id: Option<u64>,
+    pub name: Option<String>,
 }
