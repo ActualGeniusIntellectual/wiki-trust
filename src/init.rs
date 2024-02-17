@@ -37,5 +37,4 @@ fn init_log() {
 pub fn init() {
     init_dotenv();
     init_log();
-    //init_store()
 }

@@ -2,13 +2,15 @@ mod init;
 mod models;
 mod revision;
 
+mod store;
+
 fn main() {
     println!("Hello, world!");
     init::init();
-    let revs = revision::all("Earth");
+    let mut cache = store::init_store();
+    let revs = revision::all(&mut cache, "Earth");
 
-    // Pretty print the revision
-    println!("{:#?}", revs);
+    println!("{:?}", revs);
 
     println!("Goodbye cruel world!");
 }
