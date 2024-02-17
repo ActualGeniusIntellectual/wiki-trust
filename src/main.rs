@@ -57,7 +57,7 @@ fn init() {
     init_log();
 }
 fn main() {
-    init();
     println!("Hello, world!");
+    init();
     println!("Goodbye cruel world!");
 }
