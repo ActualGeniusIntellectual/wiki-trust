@@ -28,7 +28,7 @@ fn init_log() {
                 record.args()
             )
         })
-        .filter(None, LevelFilter::Debug)
+        .filter(None, LevelFilter::Info)
         .init();
 
     log::info!("Logger initialized");
