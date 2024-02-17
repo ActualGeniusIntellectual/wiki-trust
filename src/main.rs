@@ -2,15 +2,19 @@ mod init;
 mod models;
 mod revision;
 
-mod store;
-
-fn main() {
+#[tokio::main]
+async fn main() {
     println!("Hello, world!");
     init::init();
-    let mut cache = store::init_store();
-    let revs = revision::all(&mut cache, "Earth");
+    let db = init::init_surreal().await;
+    let page = "Earth".to_string();
+    let revs = revision::retrieve(&page);
 
-    log::debug!("{:#?}", revs);
+    // Insert the revisions into the database under the key "Earth"
+    for data in revs.await {
+        let revs: Vec<models::Revision> = db.create(&page).content(data).await.unwrap();
+        log::info!("Inserted {} revisions", revs.len());
+    }
 
     println!("Goodbye cruel world!");
 }
