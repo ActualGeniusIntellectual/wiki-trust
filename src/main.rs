@@ -10,7 +10,7 @@ fn main() {
     let mut cache = store::init_store();
     let revs = revision::all(&mut cache, "Earth");
 
-    println!("{:?}", revs);
+    log::debug!("{:#?}", revs);
 
     println!("Goodbye cruel world!");
 }
