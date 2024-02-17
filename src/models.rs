@@ -1,5 +1,12 @@
 use serde::{Deserialize, Serialize};
 
+// Struct for the revision count
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+pub struct CountResponse {
+    pub count: u64,
+    pub limit: bool,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub struct Revision {
     pub id: Option<u64>,
