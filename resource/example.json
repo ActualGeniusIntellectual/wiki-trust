@@ -1,0 +1,246 @@
+{
+    "revisions": [
+        {
+            "id": 1205806380,
+            "timestamp": "2024-02-10T13:09:16Z",
+            "minor": false,
+            "size": 198570,
+            "comment": "good faith edit; too detailed image; Undid revision 1205231642 by [[Special:Contributions/Dabit100|Dabit100]] ([[User talk:Dabit100|talk]])",
+            "user": {
+                "id": 234689,
+                "name": "Nsae Comp"
+            },
+            "delta": -171
+        },
+        {
+            "id": 1205231642,
+            "timestamp": "2024-02-09T05:24:12Z",
+            "minor": false,
+            "size": 198741,
+            "comment": "/* Size and shape */ adding important photo",
+            "user": {
+                "id": 9939778,
+                "name": "Dabit100"
+            },
+            "delta": 171
+        },
+        {
+            "id": 1202236066,
+            "timestamp": "2024-02-02T09:05:58Z",
+            "minor": false,
+            "size": 198570,
+            "comment": "sry taking out my own edit: while theoretically true, on second thought it is too distant (50 billion years) to be enough for lead",
+            "user": {
+                "id": 234689,
+                "name": "Nsae Comp"
+            },
+            "delta": -29
+        },
+        {
+            "id": 1202105479,
+            "timestamp": "2024-02-02T01:55:33Z",
+            "minor": false,
+            "size": 198599,
+            "comment": "making it more compact and add that both will be tidally locked",
+            "user": {
+                "id": 234689,
+                "name": "Nsae Comp"
+            },
+            "delta": 13
+        },
+        {
+            "id": 1201459343,
+            "timestamp": "2024-01-31T17:50:03Z",
+            "minor": false,
+            "size": 198586,
+            "comment": "",
+            "user": {
+                "id": 16404280,
+                "name": "Nick.mon"
+            },
+            "delta": 4
+        },
+        {
+            "id": 1199380128,
+            "timestamp": "2024-01-26T22:59:27Z",
+            "minor": true,
+            "size": 198582,
+            "comment": "formatting",
+            "user": {
+                "id": 44413386,
+                "name": "Findingmoney100"
+            },
+            "delta": 25
+        },
+        {
+            "id": 1198185097,
+            "timestamp": "2024-01-23T09:07:08Z",
+            "minor": false,
+            "size": 198557,
+            "comment": "Altered title. | [[:en:WP:UCB|Use this bot]]. [[:en:WP:DBUG|Report bugs]]. | #UCB_CommandLine",
+            "user": {
+                "id": 7903804,
+                "name": "Citation bot"
+            },
+            "delta": -4
+        },
+        {
+            "id": 1198158023,
+            "timestamp": "2024-01-23T05:45:31Z",
+            "minor": false,
+            "size": 198561,
+            "comment": "/* Human geography */ grammar",
+            "user": {
+                "id": 36757533,
+                "name": "Devonian Wombat"
+            },
+            "delta": 2
+        },
+        {
+            "id": 1198156345,
+            "timestamp": "2024-01-23T05:32:38Z",
+            "minor": false,
+            "size": 198559,
+            "comment": "Filled out refs",
+            "user": {
+                "id": 36757533,
+                "name": "Devonian Wombat"
+            },
+            "delta": 134
+        },
+        {
+            "id": 1198155890,
+            "timestamp": "2024-01-23T05:29:21Z",
+            "minor": false,
+            "size": 198425,
+            "comment": "Filled out ref",
+            "user": {
+                "id": 36757533,
+                "name": "Devonian Wombat"
+            },
+            "delta": 48
+        },
+        {
+            "id": 1197915852,
+            "timestamp": "2024-01-22T11:45:17Z",
+            "minor": true,
+            "size": 198377,
+            "comment": "they don't appear to have been usurped",
+            "user": {
+                "id": 16710,
+                "name": "Tpbradbury"
+            },
+            "delta": -40
+        },
+        {
+            "id": 1196109647,
+            "timestamp": "2024-01-16T10:38:51Z",
+            "minor": false,
+            "size": 198417,
+            "comment": "image too big",
+            "user": {
+                "id": 42403794,
+                "name": "CactiStaccingCrane"
+            },
+            "delta": -20
+        },
+        {
+            "id": 1195814888,
+            "timestamp": "2024-01-15T11:31:56Z",
+            "minor": true,
+            "size": 198437,
+            "comment": "[[Wikipedia:OABOT|Open access bot]]: hdl updated in citation with #oabot.",
+            "user": {
+                "id": 28481209,
+                "name": "OAbot"
+            },
+            "delta": 66
+        },
+        {
+            "id": 1195687077,
+            "timestamp": "2024-01-14T21:56:56Z",
+            "minor": false,
+            "size": 198371,
+            "comment": "/* top */",
+            "user": {
+                "id": 93143,
+                "name": "Kwamikagami"
+            },
+            "delta": -1
+        },
+        {
+            "id": 1195686868,
+            "timestamp": "2024-01-14T21:56:07Z",
+            "minor": false,
+            "size": 198372,
+            "comment": "/* top */",
+            "user": {
+                "id": 93143,
+                "name": "Kwamikagami"
+            },
+            "delta": 21
+        },
+        {
+            "id": 1195372088,
+            "timestamp": "2024-01-13T15:33:55Z",
+            "minor": false,
+            "size": 198351,
+            "comment": "add a closer web color",
+            "user": {
+                "id": 42403794,
+                "name": "CactiStaccingCrane"
+            },
+            "delta": 7
+        },
+        {
+            "id": 1194922282,
+            "timestamp": "2024-01-11T12:28:40Z",
+            "minor": false,
+            "size": 198344,
+            "comment": "/* Physical characteristics */ Added source.",
+            "user": {
+                "id": 41298108,
+                "name": "The great Jay"
+            },
+            "delta": 331
+        },
+        {
+            "id": 1194398326,
+            "timestamp": "2024-01-08T20:29:55Z",
+            "minor": false,
+            "size": 198013,
+            "comment": "Undid revision 1194396984 by [[Special:Contributions/SwensonJ|SwensonJ]] ([[User talk:SwensonJ|talk]])rv - we can expect our readers to know what an ocean is",
+            "user": {
+                "id": 1720909,
+                "name": "Mikenorton"
+            },
+            "delta": -4
+        },
+        {
+            "id": 1194396984,
+            "timestamp": "2024-01-08T20:22:10Z",
+            "minor": true,
+            "size": 198017,
+            "comment": "",
+            "user": {
+                "id": 39443792,
+                "name": "SwensonJ"
+            },
+            "delta": 4
+        },
+        {
+            "id": 1194342863,
+            "timestamp": "2024-01-08T14:31:23Z",
+            "minor": false,
+            "size": 198013,
+            "comment": "darker color accent in infobox",
+            "user": {
+                "id": 42403794,
+                "name": "CactiStaccingCrane"
+            },
+            "delta": 0
+        }
+    ],
+    "latest": "https://en.wikipedia.org/w/rest.php/v1/page/Earth/history",
+    "older": "https://en.wikipedia.org/w/rest.php/v1/page/Earth/history?older_than=1194342863"
+}
