@@ -2,6 +2,7 @@
 name = "wiki-trust"
 version = "0.1.0"
 edition = "2021"
+authors = [ "Actual Genius Intellectual"]
 
 [dependencies]
 chrono = "0.4.34"
@@ -10,5 +11,6 @@ dotenv = "0.15.0"
 env_logger = "0.11.2"
 log = "0.4.20"
 rayon = "1.8.1"
-serde = "1.0.196"
+reqwest = { version = "0.11.6", features = ["blocking"]}
+serde = { version = "1.0.196", features = ["derive"] }
 serde_json = "1.0.113"
