@@ -22,6 +22,7 @@ pub fn write_store(store: &mut Store, page: &str, revisions: Vec<Revision>) {
 
 // Write the store to disk
 pub fn write_store_to_disk(store: &Store) {
-    let store_str = format!("{:#?}", store);
-    std::fs::write(".store.json", store_str).unwrap();
+    // Use serde_json::to_prety_writer to write the store to disk
+    let pretty = serde_json::to_string_pretty(store).unwrap();
+    std::fs::write(".store.json", pretty).unwrap();
 }
