@@ -1,15 +1,6 @@
-// Add these to your Cargo.toml
-// [dependencies]
-// reqwest = "0.11"
-// log = "0.4"
-// env_logger = "0.9"
-// rusqlite = { version = "0.26", features = ["bundled"] }
-// serde_json = "1.0"
-
 use chrono::Local;
 use env_logger::Builder;
-use log::LevelFilter;
-use log::{debug, error, info};
+use log::{debug, error, info, LevelFilter};
 use reqwest;
 use rusqlite::{params, Connection, Result};
 use serde_json::Value;
@@ -25,20 +16,26 @@ fn init() {
         .unwrap();
 
     // Initialize logger
-    Builder::new().format(|buf, record| {
-        writeln!(
-            buf,
-            "{} [{}] - {}",
-            Local::now().format("%Y-%m-%dT%H:%M:%S"),
-            record.level(),
-            record.args()
-        )
-    });
+    Builder::new()
+        .format(|buf, record| {
+            writeln!(
+                buf,
+                "{} [{}] - {}",
+                Local::now().format("%Y-%m-%dT%H:%M:%S"),
+                record.level(),
+                record.args()
+            )
+        })
+        .filter(None, LevelFilter::Debug)
+        .init();
 }
 
 fn main() -> Result<()> {
     init();
+    debug!("Logger initialized.");
+
     let conn = Connection::open("revisions.db")?;
+    debug!("Database connection established.");
 
     conn.execute(
         "CREATE TABLE IF NOT EXISTS revisions (
@@ -54,6 +51,7 @@ fn main() -> Result<()> {
     )?;
     info!("Database setup complete.");
 
+    debug!("Starting fetch_and_store_revisions.");
     fetch_and_store_revisions(&conn)?;
 
     conn.close().unwrap();
@@ -105,8 +103,13 @@ fn fetch_and_store_revisions(conn: &Connection) -> Result<()> {
         );
 
         let api_revisions_count = get_revision_count(page_title).unwrap();
+        debug!(
+            "API revisions count for {}: {}",
+            page_title, api_revisions_count
+        );
 
         if stored_revisions_count < api_revisions_count as i64 {
+            debug!("Fetching new revisions for {}.", page_title);
             // More detailed implementation for fetching and storing revisions goes here
             // Similar to the Python script but using Rust's reqwest and rusqlite libraries
         }
