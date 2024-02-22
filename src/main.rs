@@ -6,13 +6,35 @@
 // rusqlite = { version = "0.26", features = ["bundled"] }
 // serde_json = "1.0"
 
-use log::{debug, info};
+use chrono::Local;
+use env_logger::Builder;
+use log::LevelFilter;
+use log::{debug, error, info};
 use reqwest;
 use rusqlite::{params, Connection, Result};
 use serde_json::Value;
+use std::io::Write;
 
 static WIKI_API_URL: &str = "https://en.wikipedia.org/w/api.php";
-const PAGE_TITLES: &[&str] = &["Page1", "Page2"]; // Add your page titles
+const PAGE_TITLES: &[&str] = &["United_States"]; // Add your page titles
+
+fn init() {
+    rayon::ThreadPoolBuilder::new()
+        .num_threads(rayon::current_num_threads())
+        .build_global()
+        .unwrap();
+
+    // Initialize logger
+    Builder::new().format(|buf, record| {
+        writeln!(
+            buf,
+            "{} [{}] - {}",
+            Local::now().format("%Y-%m-%dT%H:%M:%S"),
+            record.level(),
+            record.args()
+        )
+    });
+}
 
 fn main() -> Result<()> {
     env_logger::init();
