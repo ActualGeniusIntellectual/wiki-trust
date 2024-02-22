@@ -7,9 +7,17 @@ pub struct CountResponse {
     pub limit: bool,
 }
 
+// Struct for table of revisions
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+pub struct RevisionTable {
+    pub page: String,
+    pub revisions: Revision,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Default, Serialize, Deserialize, Insertable)]
+#[diesel(table_name = users)]
 pub struct Revision {
-    pub id: Option<u64>,
+    pub id: u64,
     pub timestamp: Option<String>,
     pub minor: Option<bool>,
     pub size: Option<u32>,
