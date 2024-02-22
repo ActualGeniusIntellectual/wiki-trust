@@ -37,7 +37,7 @@ fn init() {
 }
 
 fn main() -> Result<()> {
-    env_logger::init();
+    init();
     let conn = Connection::open("revisions.db")?;
 
     conn.execute(
