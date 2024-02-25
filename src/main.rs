@@ -34,7 +34,7 @@ fn init() {
                 record.args()
             )
         })
-        .filter(None, LevelFilter::Debug)
+        .filter(None, LevelFilter::Info)
         .init();
 
     let conn = Connection::open("revisions.db").expect("Error opening database.");
