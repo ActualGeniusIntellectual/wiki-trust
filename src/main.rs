@@ -9,7 +9,7 @@
 use env_logger::Builder;
 
 use chrono::Local;
-use log::{debug, info, LevelFilter};
+use log::{debug, error, info, LevelFilter};
 use reqwest;
 use rusqlite::{params, Connection, Result};
 use std::io::Write;
@@ -121,8 +121,13 @@ fn get_revision_content(rev_id: i64) -> Result<String, reqwest::Error> {
             ("rvprop", "content"),
             ("revids", &rev_id.to_string()),
         ])
-        .send()
-        .expect("Error sending request.");
+        .send();
+
+    if let Err(e) = response {
+        return Err(e);
+    }
+
+    let response = response.unwrap();
 
     // Debug log url
     debug!("URL: {}", response.url());
@@ -170,7 +175,7 @@ fn process_revisions(conn: &Connection) -> Result<()> {
                 store_content(conn, rev_id, &content)?;
                 info!("{}", rev_id);
             }
-            Err(e) => debug!("Error fetching content for revision ID {}: {}", rev_id, e),
+            Err(e) => error!("Error fetching content for revision ID {}: {}", rev_id, e),
         }
     }
     Ok(())
