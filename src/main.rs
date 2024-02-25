@@ -1,23 +1,21 @@
-use chrono::Local;
+// Add these to your Cargo.toml
+// [dependencies]
+// reqwest = "0.11"
+// log = "0.4"
+// env_logger = "0.9"
+// rusqlite = { version = "0.26", features = ["bundled"] }
+// serde_json = "1.0"
+
 use env_logger::Builder;
+
+use chrono::Local;
 use log::{debug, info, LevelFilter};
-use rayon::prelude::*;
 use reqwest;
-use rusqlite::{Connection, Result};
-use serde::Deserialize;
+use rusqlite::{params, Connection, Result};
+use serde_json::Value;
 use std::io::Write;
 
-mod lists;
-use lists::build_page_titles;
-
 static WIKI_API_URL: &str = "https://en.wikipedia.org/w/api.php";
-
-// Create Serde struct for the revision count API response
-#[derive(Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-struct RevisionCount {
-    count: u32,
-    limit: bool,
-}
 
 fn init() {
     rayon::ThreadPoolBuilder::new()
@@ -44,14 +42,10 @@ fn init() {
     debug!("Database connection established.");
 
     conn.execute(
-        "CREATE TABLE IF NOT EXISTS revisions (
-            id INTEGER PRIMARY KEY,
-            page TEXT,
-            timestamp TEXT,
-            minor BOOLEAN,
-            size INTEGER,
-            comment TEXT,
-            user TEXT
+        "CREATE TABLE IF NOT EXISTS content (
+            revision_id INTEGER PRIMARY KEY,
+            content TEXT,
+            FOREIGN KEY(revision_id) REFERENCES revisions(id)
         )",
         [],
     )
@@ -63,71 +57,68 @@ fn init() {
 
 fn main() -> Result<()> {
     init();
-    info!("Starting...");
-    debug!("Logger initialized.");
+    let conn = Connection::open("revisions.db")?;
 
-    debug!("Starting fetch_and_store_revisions.");
-    fetch_and_store_revisions()?;
+    info!("Database setup complete.");
 
-    info!("All done.");
+    process_revisions(&conn)?;
+
+    conn.close().unwrap();
+    info!("Database connection closed.");
     Ok(())
 }
 
-fn get_revision_count(page_title: &str) -> Result<u32, reqwest::Error> {
-    let count_api_url = format!(
-        "https://api.wikimedia.org/core/v1/wikipedia/en/page/{page_title}/history/counts/edits?"
-    );
-
-    debug!("Fetching revision count for {}.", page_title);
+fn get_revision_content(rev_id: i64) -> Result<String, reqwest::Error> {
+    debug!("Fetching content for revision ID: {}", rev_id);
     let client = reqwest::blocking::Client::new();
     let response = client
-        .get(count_api_url)
-        .send()
-        .expect("Error sending request.");
+        .get(WIKI_API_URL)
+        .query(&[
+            ("action", "query"),
+            ("format", "json"),
+            ("prop", "revisions"),
+            ("rvprop", "content"),
+            ("revids", &rev_id.to_string()),
+        ])
+        .send()?;
 
-    // Use serde to parse the JSON response
-    let revision_count: RevisionCount = response.json().expect("Error parsing JSON response.");
-
-    debug!(
-        "Revision count for {}: {}",
-        page_title, revision_count.count
-    );
-    Ok(revision_count.count)
+    let data = response.json::<Value>()?;
+    let page_id = data["query"]["pages"]
+        .as_object()
+        .unwrap()
+        .keys()
+        .next()
+        .unwrap()
+        .clone();
+    let content = data["query"]["pages"][page_id]["revisions"][0]["*"]
+        .as_str()
+        .unwrap()
+        .to_string();
+    Ok(content)
 }
 
-fn fetch_and_store_revisions() -> Result<()> {
-    let pages = build_page_titles();
+fn store_content(conn: &Connection, rev_id: i64, content: &str) -> Result<()> {
+    conn.execute(
+        "INSERT OR IGNORE INTO content (revision_id, content) VALUES (?, ?)",
+        params![rev_id, content],
+    )?;
+    Ok(())
+}
 
-    pages.par_iter().for_each(|&page_title| {
-        let conn = Connection::open("revisions.db").unwrap();
+fn process_revisions(conn: &Connection) -> Result<()> {
+    let mut stmt =
+        conn.prepare("SELECT id FROM revisions WHERE id NOT IN (SELECT revision_id FROM content)")?;
+    let revision_ids = stmt.query_map([], |row| row.get(0))?;
 
-        let error_message = format!("Error fetching revisions for {}", page_title);
-        let stored_revisions_count: u32 = conn
-            .query_row(
-                "SELECT COUNT(*) FROM revisions WHERE page = ?",
-                [page_title],
-                |row| row.get(0),
-            )
-            .expect(error_message.as_str());
-
-        info!(
-            "Checking stored revisions for {}: {} revisions found.",
-            page_title, stored_revisions_count
-        );
-
-        let api_revisions_count =
-            get_revision_count(page_title).expect("Error fetching revision count from API.");
-        debug!(
-            "API revisions count for {}: {}",
-            page_title, api_revisions_count
-        );
-
-        if stored_revisions_count < api_revisions_count {
-            debug!("Fetching new revisions for {}.", page_title);
+    for rev_id in revision_ids {
+        let rev_id = rev_id?;
+        match get_revision_content(rev_id) {
+            Ok(content) => {
+                store_content(conn, rev_id, &content)?;
+                info!("Stored content for revision ID: {}", rev_id);
+            }
+            Err(e) => debug!("Error fetching content for revision ID {}: {}", rev_id, e),
         }
-
-        conn.close().expect("Error closing database.");
-    });
-
+    }
     Ok(())
 }
