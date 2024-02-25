@@ -1,11 +1,10 @@
 use chrono::Local;
 use env_logger::Builder;
-use log::{debug, error, info, LevelFilter};
+use log::{debug, info, LevelFilter};
 use rayon::prelude::*;
 use reqwest;
-use rusqlite::{params, Connection, Result};
+use rusqlite::{Connection, Result};
 use serde::Deserialize;
-use serde_json::Value;
 use std::io::Write;
 
 mod lists;
@@ -103,7 +102,7 @@ fn fetch_and_store_revisions() -> Result<()> {
         let conn = Connection::open("revisions.db").unwrap();
 
         let error_message = format!("Error fetching revisions for {}", page_title);
-        let stored_revisions_count: i64 = conn
+        let stored_revisions_count: u32 = conn
             .query_row(
                 "SELECT COUNT(*) FROM revisions WHERE page = ?",
                 [page_title],
