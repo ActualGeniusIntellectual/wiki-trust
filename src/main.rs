@@ -87,8 +87,10 @@ fn init() {
     conn.execute(
         "CREATE TABLE IF NOT EXISTS content (
             revision_id INTEGER PRIMARY KEY,
+            page TEXT,
             content TEXT,
-            FOREIGN KEY(revision_id) REFERENCES revisions(id)
+            FOREIGN KEY(revision_id) REFERENCES revisions(id),
+            FOREIGN KEY(page) REFERENCES pages(title)
         )",
         [],
     )
@@ -109,7 +111,7 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn get_revision_content(rev_id: i64) -> Result<String, reqwest::Error> {
+fn get_revision_content(rev_id: u64) -> Result<String, reqwest::Error> {
     debug!("Fetching content for revision ID: {}", rev_id);
     let client = reqwest::blocking::Client::new();
     let response = client
@@ -155,27 +157,31 @@ fn get_revision_content(rev_id: i64) -> Result<String, reqwest::Error> {
     Ok(content)
 }
 
-fn store_content(conn: &Connection, rev_id: i64, content: &str) -> Result<()> {
+fn store_content(conn: &Connection, rev_id: u64, page: String, content: &str) -> Result<()> {
     conn.execute(
-        "INSERT OR IGNORE INTO content (revision_id, content) VALUES (?, ?)",
-        params![rev_id, content],
+        "INSERT OR IGNORE INTO content (revision_id, page, content) VALUES (?, ?, ?)",
+        params![rev_id, page, content],
     )?;
     Ok(())
 }
 
 fn process_revisions(conn: &Connection) -> Result<()> {
-    let mut stmt =
-        conn.prepare("SELECT id FROM revisions WHERE id NOT IN (SELECT revision_id FROM content)")?;
-    let revision_ids = stmt.query_map([], |row| row.get(0))?;
+    let mut stmt = conn.prepare(
+    "SELECT (page, id) FROM revisions WHERE id NOT IN (SELECT revision_id FROM content) ORDER BY page",
+    )?;
 
-    for rev_id in revision_ids {
-        let rev_id = rev_id?;
-        match get_revision_content(rev_id) {
+    // Return a list of revision IDs and their associated page
+    let revs = stmt.query_map([], |row| Ok((row.get(0)?, row.get(1)?)))?;
+
+    for rev_id in revs {
+        let (page, id): (String, u64) = rev_id?;
+
+        match get_revision_content(id) {
             Ok(content) => {
-                store_content(conn, rev_id, &content)?;
-                info!("{}", rev_id);
+                store_content(conn, id, page, &content)?;
+                info!("{}", id);
             }
-            Err(e) => error!("Error fetching content for revision ID {}: {}", rev_id, e),
+            Err(e) => error!("Error: {} ({}): {}", id, page, e),
         }
     }
     Ok(())
