@@ -122,7 +122,7 @@ fn fetch_and_store_revisions() -> Result<()> {
             page_title, api_revisions_count
         );
 
-        if stored_revisions_count < api_revisions_count as i64 {
+        if stored_revisions_count < api_revisions_count {
             debug!("Fetching new revisions for {}.", page_title);
         }
 
