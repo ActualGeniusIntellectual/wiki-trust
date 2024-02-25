@@ -16,7 +16,7 @@ use std::io::Write;
 
 static WIKI_API_URL: &str = "https://en.wikipedia.org/w/api.php";
 
-use serde::{de, Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
