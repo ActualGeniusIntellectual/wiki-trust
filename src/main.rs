@@ -1,17 +1,20 @@
 use chrono::Local;
 use env_logger::Builder;
 use log::{debug, error, info, LevelFilter};
+use rayon::prelude::*;
 use reqwest;
 use rusqlite::{params, Connection, Result};
 use serde_json::Value;
 use std::io::Write;
 
+mod lists;
+use lists::build_page_titles;
+
 static WIKI_API_URL: &str = "https://en.wikipedia.org/w/api.php";
-const PAGE_TITLES: &[&str] = &["United_States"]; // Add your page titles
 
 fn init() {
     rayon::ThreadPoolBuilder::new()
-        .num_threads(rayon::current_num_threads())
+        .num_threads(1)
         .build_global()
         .unwrap();
 
@@ -28,13 +31,9 @@ fn init() {
         })
         .filter(None, LevelFilter::Debug)
         .init();
-}
 
-fn main() -> Result<()> {
-    init();
-    debug!("Logger initialized.");
+    let conn = Connection::open("revisions.db").expect("Error opening database.");
 
-    let conn = Connection::open("revisions.db")?;
     debug!("Database connection established.");
 
     conn.execute(
@@ -48,14 +47,22 @@ fn main() -> Result<()> {
             user TEXT
         )",
         [],
-    )?;
+    )
+    .expect("Error creating table.");
+
     info!("Database setup complete.");
+    conn.close().unwrap();
+}
+
+fn main() -> Result<()> {
+    init();
+    info!("Starting...");
+    debug!("Logger initialized.");
 
     debug!("Starting fetch_and_store_revisions.");
-    fetch_and_store_revisions(&conn)?;
+    fetch_and_store_revisions()?;
 
-    conn.close().unwrap();
-    info!("Database connection closed.");
+    info!("All done.");
     Ok(())
 }
 
@@ -90,13 +97,18 @@ fn get_revision_count(page_title: &str) -> Result<usize, reqwest::Error> {
     Ok(revision_count)
 }
 
-fn fetch_and_store_revisions(conn: &Connection) -> Result<()> {
-    for &page_title in PAGE_TITLES.iter() {
-        let stored_revisions_count: i64 = conn.query_row(
-            "SELECT COUNT(*) FROM revisions WHERE page = ?",
-            [page_title],
-            |row| row.get(0),
-        )?;
+fn fetch_and_store_revisions() -> Result<()> {
+    let pages = build_page_titles();
+
+    pages.par_iter().for_each(|&page_title| {
+        let conn = Connection::open("revisions.db").unwrap();
+        let stored_revisions_count: i64 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM revisions WHERE page = ?",
+                [page_title],
+                |row| row.get(0),
+            )
+            .unwrap();
         info!(
             "Checking stored revisions for {}: {} revisions found.",
             page_title, stored_revisions_count
@@ -113,6 +125,7 @@ fn fetch_and_store_revisions(conn: &Connection) -> Result<()> {
             // More detailed implementation for fetching and storing revisions goes here
             // Similar to the Python script but using Rust's reqwest and rusqlite libraries
         }
-    }
+    });
+
     Ok(())
 }
