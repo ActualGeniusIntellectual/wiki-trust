@@ -115,7 +115,7 @@ fn process_revisions(conn: &Connection) -> Result<()> {
         match get_revision_content(rev_id) {
             Ok(content) => {
                 store_content(conn, rev_id, &content)?;
-                info!("Stored content for revision ID: {}", rev_id);
+                info!("{}", rev_id);
             }
             Err(e) => debug!("Error fetching content for revision ID {}: {}", rev_id, e),
         }
