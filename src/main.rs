@@ -17,6 +17,46 @@ use std::io::Write;
 
 static WIKI_API_URL: &str = "https://en.wikipedia.org/w/api.php";
 
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+
+#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
+struct Warning {
+    #[serde(rename = "*")]
+    message: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
+struct Warnings {
+    main: Warning,
+    revisions: Warning,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
+struct Revision {
+    textmissing: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
+struct Page {
+    pageid: u32,
+    ns: u8,
+    title: String,
+    revisions: Vec<Revision>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
+struct Query {
+    pages: HashMap<String, Page>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
+struct ApiResponse {
+    batchcomplete: String,
+    warnings: Warnings,
+    query: Query,
+}
+
 fn init() {
     rayon::ThreadPoolBuilder::new()
         .num_threads(1)
@@ -34,7 +74,7 @@ fn init() {
                 record.args()
             )
         })
-        .filter(None, LevelFilter::Info)
+        .filter(None, LevelFilter::Debug)
         .init();
 
     let conn = Connection::open("revisions.db").expect("Error opening database.");
@@ -59,8 +99,6 @@ fn main() -> Result<()> {
     init();
     let conn = Connection::open("revisions.db")?;
 
-    info!("Database setup complete.");
-
     process_revisions(&conn)?;
 
     conn.close().unwrap();
@@ -80,9 +118,14 @@ fn get_revision_content(rev_id: i64) -> Result<String, reqwest::Error> {
             ("rvprop", "content"),
             ("revids", &rev_id.to_string()),
         ])
-        .send()?;
+        .send()
+        .expect("Error sending request.");
 
-    let data = response.json::<Value>()?;
+    // Debug log url
+    debug!("URL: {}", response.url());
+
+    let data = response.json::<Value>().expect("Error parsing JSON.");
+
     let page_id = data["query"]["pages"]
         .as_object()
         .unwrap()
@@ -90,6 +133,7 @@ fn get_revision_content(rev_id: i64) -> Result<String, reqwest::Error> {
         .next()
         .unwrap()
         .clone();
+
     let content = data["query"]["pages"][page_id]["revisions"][0]["*"]
         .as_str()
         .unwrap()
