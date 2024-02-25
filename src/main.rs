@@ -51,7 +51,7 @@ fn init() {
     .expect("Error creating table.");
 
     info!("Database setup complete.");
-    conn.close().unwrap();
+    conn.close().expect("Error closing database.");
 }
 
 fn main() -> Result<()> {
@@ -109,6 +109,7 @@ fn fetch_and_store_revisions() -> Result<()> {
                 |row| row.get(0),
             )
             .unwrap();
+
         info!(
             "Checking stored revisions for {}: {} revisions found.",
             page_title, stored_revisions_count
@@ -125,6 +126,8 @@ fn fetch_and_store_revisions() -> Result<()> {
             // More detailed implementation for fetching and storing revisions goes here
             // Similar to the Python script but using Rust's reqwest and rusqlite libraries
         }
+
+        conn.close().expect("Error closing database.");
     });
 
     Ok(())
