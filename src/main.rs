@@ -12,12 +12,11 @@ use chrono::Local;
 use log::{debug, info, LevelFilter};
 use reqwest;
 use rusqlite::{params, Connection, Result};
-use serde_json::Value;
 use std::io::Write;
 
 static WIKI_API_URL: &str = "https://en.wikipedia.org/w/api.php";
 
-use serde::{Deserialize, Serialize};
+use serde::{de, Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
@@ -34,7 +33,11 @@ struct Warnings {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
 struct Revision {
-    textmissing: Option<String>,
+    contentformat: String,
+    contentmodel: String,
+
+    #[serde(rename = "*")]
+    content: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
@@ -74,7 +77,7 @@ fn init() {
                 record.args()
             )
         })
-        .filter(None, LevelFilter::Debug)
+        .filter(None, LevelFilter::Info)
         .init();
 
     let conn = Connection::open("revisions.db").expect("Error opening database.");
@@ -124,20 +127,26 @@ fn get_revision_content(rev_id: i64) -> Result<String, reqwest::Error> {
     // Debug log url
     debug!("URL: {}", response.url());
 
-    let data = response.json::<Value>().expect("Error parsing JSON.");
+    let data: ApiResponse = response.json()?;
+    debug!("Response: {:#?}", data);
 
-    let page_id = data["query"]["pages"]
-        .as_object()
-        .unwrap()
-        .keys()
-        .next()
-        .unwrap()
-        .clone();
+    // Get the first revision
+    let mut pages = data.query.pages.values();
 
-    let content = data["query"]["pages"][page_id]["revisions"][0]["*"]
-        .as_str()
-        .unwrap()
-        .to_string();
+    let first_page = match pages.next() {
+        Some(page) => page,
+        None => panic!("No pages found"),
+    };
+
+    let revisions = &first_page.revisions;
+    let first_revision = match revisions.first() {
+        Some(revision) => revision,
+        None => panic!("No revisions found"),
+    };
+
+    let content = first_revision.content.clone();
+
+    debug!("Content: {}", content);
     Ok(content)
 }
 
