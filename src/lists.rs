@@ -1,4 +1,4 @@
-const PRESIDENTS: [&str] = vec![
+const PRESIDENTS: [&str; 45] = [
     "George_Washington",
     "John_Adams",
     "Thomas_Jefferson",
@@ -47,7 +47,7 @@ const PRESIDENTS: [&str] = vec![
 ];
 
 // List of European countries with space converted to underscore
-const EUROPEAN_COUNTRIES: [&str] = vec![
+const EUROPEAN_COUNTRIES: [&str; 49] = [
     "Albania",
     "Andorra",
     "Armenia",
@@ -100,7 +100,7 @@ const EUROPEAN_COUNTRIES: [&str] = vec![
 ];
 
 // List of US states with space converted to underscore
-const US_STATES: [&str] = vec![
+const US_STATES: [&str; 50] = [
     "Alabama",
     "Alaska",
     "Arizona",
@@ -154,7 +154,7 @@ const US_STATES: [&str] = vec![
 ];
 
 // List of Asian countries with space converted to underscore
-const ASIAN_COUNTRIES: [&str] = [
+const ASIAN_COUNTRIES: [&str; 43] = [
     "Afghanistan",
     "Bahrain",
     "Bangladesh",
@@ -201,7 +201,7 @@ const ASIAN_COUNTRIES: [&str] = [
 ];
 
 // List of Latin American countries with space converted to underscore
-const LATIN_AMERICAN_COUNTRIES: [&str] = vec![
+const LATIN_AMERICAN_COUNTRIES: [&str; 20] = [
     "Argentina",
     "Bolivia",
     "Brazil",
@@ -225,7 +225,7 @@ const LATIN_AMERICAN_COUNTRIES: [&str] = vec![
 ];
 
 // List of Philosopher with space converted to underscore
-const PHILOSOPHERS: [&str] = vec![
+const PHILOSOPHERS: [&str; 38] = [
     "Aristotle",
     "Confucius",
     "Socrates",
@@ -267,7 +267,7 @@ const PHILOSOPHERS: [&str] = vec![
 ];
 
 // List of Mathematicians with space converted to underscore
-const MATHEMATICIANS: [&str] = vec![
+const MATHEMATICIANS: [&str; 39] = [
     "Euclid",
     "Pythagoras",
     "Archimedes",
@@ -310,7 +310,7 @@ const MATHEMATICIANS: [&str] = vec![
 ];
 
 // List of Physicists with space converted to underscore
-const PHYSICISTS: [&str] = [
+const PHYSICISTS: [&str; 32] = [
     "Isaac_Newton",
     "Albert_Einstein",
     "Galileo_Galilei",
@@ -346,7 +346,7 @@ const PHYSICISTS: [&str] = [
 ];
 
 // List of economists with space converted to underscore
-const ECONOMISTS: [&str] = [
+const ECONOMISTS: [&str; 40] = [
     "Adam_Smith",
     "David_Ricardo",
     "Thomas_Malthus",
@@ -390,7 +390,7 @@ const ECONOMISTS: [&str] = [
 ];
 
 // List of political ideologies with space converted to underscore
-const POLITICAL_IDEOLOGIES: [&str] = vec![
+const POLITICAL_IDEOLOGIES: [&str; 8] = [
     "Anarchism",
     "Communism",
     "Conservatism",
@@ -401,7 +401,7 @@ const POLITICAL_IDEOLOGIES: [&str] = vec![
     "Socialism",
 ];
 
-const POLITICAL_IDEOLOGIES2: [&str] = vec![
+const POLITICAL_IDEOLOGIES2: [&str; 80] = [
     "Anti-establishment",
     "Centrism",
     "Hardline",
@@ -485,7 +485,7 @@ const POLITICAL_IDEOLOGIES2: [&str] = vec![
 ];
 
 // List of types of government with space converted to underscore
-const TYPES_OF_GOVERNMENT: [&str] = vec![
+const TYPES_OF_GOVERNMENT: [&str; 17] = [
     "Anarchy",
     "Aristocracy",
     "Autocracy",
@@ -505,7 +505,7 @@ const TYPES_OF_GOVERNMENT: [&str] = vec![
     "Totalitarianism",
 ];
 
-const TYPES_OF_GOVERNMENT2: [&str] = vec![
+const TYPES_OF_GOVERNMENT2: [&str; 32] = [
     "Anarchy",
     "Aristocracy",
     "Authoritarianism",
@@ -540,7 +540,7 @@ const TYPES_OF_GOVERNMENT2: [&str] = vec![
     "Tribalism",
 ];
 
-const TYPES_OF_GOVERNMENT3: [&str] = vec![
+const TYPES_OF_GOVERNMENT3: [&str; 22] = [
     "Agrarianism",
     "Anarchism",
     "Authoritarianism",
@@ -565,7 +565,7 @@ const TYPES_OF_GOVERNMENT3: [&str] = vec![
     "Progressivism",
 ];
 
-const SOCIAL_SERVICE: [&str] = vec![
+const SOCIAL_SERVICE: [&str; 7] = [
     "Socialism",
     "Social_democracy",
     "Social_anarchism",
@@ -575,7 +575,7 @@ const SOCIAL_SERVICE: [&str] = vec![
     "Socialism_with_Chinese_characteristics",
 ];
 
-const SOCIAL_SERVICE2: [&str] = vec![
+const SOCIAL_SERVICE2: [&str; 15] = [
     "Social_insurance",
     "Law_enforcement",
     "Unemployment_benefits",
@@ -594,7 +594,7 @@ const SOCIAL_SERVICE2: [&str] = vec![
 ];
 
 // List of high profile communists
-const COMMUNISTS: [&str] = vec![
+const COMMUNISTS: [&str; 32] = [
     "Karl_Marx",
     "Vladimir_Lenin",
     "Joseph_Stalin",
@@ -630,7 +630,7 @@ const COMMUNISTS: [&str] = vec![
 ];
 
 // List of Critical Theorists
-const CRITICAL_THEORISTS: [&str] = vec![
+const CRITICAL_THEORISTS: [&str; 23] = [
     "Max_Horkheimer",
     "Theodor_Adorno",
     "Herbert_Marcuse",
@@ -657,7 +657,7 @@ const CRITICAL_THEORISTS: [&str] = vec![
 ];
 
 // List of woke terms
-const WOKE_TERMS: [&str] = vec![
+const WOKE_TERMS: [&str; 23] = [
     "Woke",
     "Cancel_culture",
     "Critical_race_theory",
@@ -684,7 +684,7 @@ const WOKE_TERMS: [&str] = vec![
 ];
 
 // List of fascist leaders with space converted to underscore
-const FASCISTS: [&str] = vec![
+const FASCISTS: [&str; 16] = [
     "Benito_Mussolini",
     "Adolf_Hitler",
     "Francisco_Franco",
@@ -704,7 +704,7 @@ const FASCISTS: [&str] = vec![
 ];
 
 // List of list of page titles
-const LISTS: [[&str]] = vec![
+/*
     PRESIDENTS,
     EUROPEAN_COUNTRIES,
     US_STATES,
@@ -723,23 +723,57 @@ const LISTS: [[&str]] = vec![
     WOKE_TERMS,
     FASCISTS,
 ];
+*/
 
 // Count of all page titles
-const fn count_page_titles() -> usize {
-    let mut count = 0;
-    for list in LISTS.iter() {
-        count += list.len();
-    }
-    count
+pub const fn count_page_titles() -> usize {
+    PRESIDENTS.len()
+        + EUROPEAN_COUNTRIES.len()
+        + US_STATES.len()
+        + ASIAN_COUNTRIES.len()
+        + PHILOSOPHERS.len()
+        + MATHEMATICIANS.len()
+        + PHYSICISTS.len()
+        + ECONOMISTS.len()
+        + POLITICAL_IDEOLOGIES.len()
+        + POLITICAL_IDEOLOGIES2.len()
+        + TYPES_OF_GOVERNMENT.len()
+        + TYPES_OF_GOVERNMENT2.len()
+        + TYPES_OF_GOVERNMENT3.len()
+        + SOCIAL_SERVICE.len()
+        + SOCIAL_SERVICE2.len()
+        + COMMUNISTS.len()
+        + CRITICAL_THEORISTS.len()
+        + WOKE_TERMS.len()
+        + FASCISTS.len()
 }
 
 // Build a list of page titles
-const fn build_page_titles() -> Vec<String> {
-    let mut page_titles = Vec::with_capacity(count_page_titles());
-    for list in LISTS.iter() {
-        for title in list.iter() {
-            page_titles.push(title.to_string());
-        }
-    }
-    page_titles
+// Use a set to avoid duplicates
+use std::collections::HashSet;
+
+pub fn build_page_titles() -> Vec<&'static str> {
+    let mut titles = HashSet::new();
+    titles.extend(PRESIDENTS);
+    titles.extend(EUROPEAN_COUNTRIES);
+    titles.extend(US_STATES);
+    titles.extend(ASIAN_COUNTRIES);
+    titles.extend(PHILOSOPHERS);
+    titles.extend(MATHEMATICIANS);
+    titles.extend(PHYSICISTS);
+    titles.extend(ECONOMISTS);
+    titles.extend(POLITICAL_IDEOLOGIES);
+    titles.extend(POLITICAL_IDEOLOGIES2);
+    titles.extend(TYPES_OF_GOVERNMENT);
+    titles.extend(TYPES_OF_GOVERNMENT2);
+    titles.extend(TYPES_OF_GOVERNMENT3);
+    titles.extend(SOCIAL_SERVICE);
+    titles.extend(SOCIAL_SERVICE2);
+    titles.extend(COMMUNISTS);
+    titles.extend(CRITICAL_THEORISTS);
+    titles.extend(WOKE_TERMS);
+    titles.extend(FASCISTS);
+
+    let titles_vec: Vec<&'static str> = titles.into_iter().collect();
+    titles_vec
 }
