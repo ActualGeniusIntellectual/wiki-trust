@@ -1,16 +1,7 @@
-// Add these to your Cargo.toml
-// [dependencies]
-// reqwest = "0.11"
-// log = "0.4"
-// env_logger = "0.9"
-// rusqlite = { version = "0.26", features = ["bundled"] }
-// serde_json = "1.0"
-
 use env_logger::Builder;
 
 use chrono::Local;
 use log::{debug, error, info, LevelFilter};
-use reqwest;
 use rusqlite::{params, Connection, Result};
 use std::io::Write;
 
@@ -58,6 +49,12 @@ struct ApiResponse {
     batchcomplete: String,
     warnings: Warnings,
     query: Query,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
+struct Content {
+    page: String,
+    id: u32,
 }
 
 fn init() {
@@ -111,7 +108,7 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn get_revision_content(rev_id: u64) -> Result<String, reqwest::Error> {
+fn get_revision_content(rev_id: u32) -> Result<String, reqwest::Error> {
     debug!("Fetching content for revision ID: {}", rev_id);
     let client = reqwest::blocking::Client::new();
     let response = client
@@ -157,7 +154,7 @@ fn get_revision_content(rev_id: u64) -> Result<String, reqwest::Error> {
     Ok(content)
 }
 
-fn store_content(conn: &Connection, rev_id: u64, page: String, content: &str) -> Result<()> {
+fn store_content(conn: &Connection, rev_id: u32, page: String, content: &str) -> Result<()> {
     conn.execute(
         "INSERT OR IGNORE INTO content (revision_id, page, content) VALUES (?, ?, ?)",
         params![rev_id, page, content],
@@ -166,22 +163,34 @@ fn store_content(conn: &Connection, rev_id: u64, page: String, content: &str) ->
 }
 
 fn process_revisions(conn: &Connection) -> Result<()> {
+    debug!("Processing revisions.");
+
     let mut stmt = conn.prepare(
-    "SELECT (page, id) FROM revisions WHERE id NOT IN (SELECT revision_id FROM content) ORDER BY page",
+    "SELECT page, id FROM revisions WHERE id NOT IN (SELECT revision_id FROM content) ORDER BY page",
     )?;
 
     // Return a list of revision IDs and their associated page
-    let revs = stmt.query_map([], |row| Ok((row.get(0)?, row.get(1)?)))?;
+    let revs = stmt.query_map([], |row| {
+        Ok(Content {
+            page: row.get(0)?,
+            id: row.get(1)?,
+        })
+    })?;
+
+    // Convert into a list of Result<(String, u64)>
+    let revs: Vec<Result<Content>> = revs.collect();
+
+    info!("Revisions to process: {:#?}", revs.len());
 
     for rev_id in revs {
-        let (page, id): (String, u64) = rev_id?;
+        let rev = rev_id?;
 
-        match get_revision_content(id) {
+        match get_revision_content(rev.id) {
             Ok(content) => {
-                store_content(conn, id, page, &content)?;
-                info!("{}", id);
+                store_content(conn, rev.id, rev.page, &content)?;
+                info!("{}", rev.id);
             }
-            Err(e) => error!("Error: {} ({}): {}", id, page, e),
+            Err(e) => error!("Error: {} ({}): {}", rev.id, rev.page, e),
         }
     }
     Ok(())
