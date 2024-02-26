@@ -33,7 +33,7 @@ struct Revision {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
 struct Page {
-    pageid: u32,
+    pageid: u64,
     ns: u8,
     title: String,
     revisions: Vec<Revision>,
@@ -54,7 +54,7 @@ struct ApiResponse {
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
 struct Content {
     page: String,
-    id: u32,
+    id: u64,
 }
 
 fn init() {
@@ -108,7 +108,7 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn get_revision_content(rev_id: u32) -> Result<String, reqwest::Error> {
+fn get_revision_content(rev_id: u64) -> Result<String, reqwest::Error> {
     debug!("Fetching content for revision ID: {}", rev_id);
     let client = reqwest::blocking::Client::new();
     let response = client
@@ -154,7 +154,7 @@ fn get_revision_content(rev_id: u32) -> Result<String, reqwest::Error> {
     Ok(content)
 }
 
-fn store_content(conn: &Connection, rev_id: u32, page: String, content: &str) -> Result<()> {
+fn store_content(conn: &Connection, rev_id: u64, page: String, content: &str) -> Result<()> {
     conn.execute(
         "INSERT OR IGNORE INTO content (revision_id, page, content) VALUES (?, ?, ?)",
         params![rev_id, page, content],
