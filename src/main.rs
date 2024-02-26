@@ -187,8 +187,8 @@ fn process_revisions(conn: &Connection) -> Result<()> {
 
         match get_revision_content(rev.id) {
             Ok(content) => {
+                info!("{} {}", rev.page, rev.id);
                 store_content(conn, rev.id, rev.page, &content)?;
-                info!("{}", rev.id);
             }
             Err(e) => error!("Error: {} ({}): {}", rev.id, rev.page, e),
         }
